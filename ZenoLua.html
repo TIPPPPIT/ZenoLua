@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zeno | Roblox Lua Obfuscator</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Outfit:wght@400;700&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <div class="background">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+
+    <main class="container">
+        <header>
+            <h1>ZENO <span class="accent">LUA</span></h1>
+            <p>Premium Obfuscation for Roblox Scripts</p>
+        </header>
+
+        <section class="editor-section">
+            <div class="editor-container glass">
+                <div class="editor-header">
+                    <span>Input Script</span>
+                </div>
+                <textarea id="input" placeholder="Paste your Lua code here..."></textarea>
+            </div>
+
+            <div class="controls">
+                <button id="obfuscate-btn" class="glow-button">OBFUSCATE</button>
+                <button id="copy-btn" class="secondary-button">COPY RESULT</button>
+            </div>
+
+            <div class="editor-container glass">
+                <div class="editor-header">
+                    <span>Obfuscated Result</span>
+                </div>
+                <textarea id="output" readonly placeholder="Result will appear here..."></textarea>
+            </div>
+        </section>
+
+        <footer>
+            <p>&copy; 2026 Zeno</p>
+        </footer>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

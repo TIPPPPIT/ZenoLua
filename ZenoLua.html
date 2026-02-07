@@ -1,389 +1,345 @@
 <!DOCTYPE html>
-<html lang="de" data-theme="dark">
+<html lang="de">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Zeno Lua | Premium Obfuscator</title>
+    <title>ZENO | Ultimate Obfuscator</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono&display=swap"
+    <link
+        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&family=JetBrains+Mono&display=swap"
         rel="stylesheet">
     <style>
         :root {
-            --bg-page: #0d1117;
-            --bg-box: #161b22;
-            --border: #30363d;
-            --text-main: #c9d1d9;
-            --text-sec: #8b949e;
-            --accent: #238636;
-            --accent-hover: #2ea043;
-            --btn-bg: #21262d;
-            --btn-border: rgba(240, 246, 252, 0.1);
-            --btn-text: #c9d1d9;
-            --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
-            --font-mono: 'JetBrains Mono', 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+            --accent: #00f2ff;
+            --secondary: #7000ff;
+            --bg: #030005;
+            --glass: rgba(255, 255, 255, 0.03);
+            --border: rgba(255, 255, 255, 0.08);
+            --text: #ffffff;
+            --text-dim: rgba(255, 255, 255, 0.5);
         }
 
         * {
-            box-sizing: border-box;
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
+            cursor: none;
         }
 
         body {
-            background-color: var(--bg-page);
-            color: var(--text-main);
-            font-family: var(--font-sans);
-            line-height: 1.5;
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Space Grotesk', sans-serif;
             min-height: 100vh;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #mc-crosshair {
+            position: fixed;
+            width: 20px;
+            height: 20px;
+            pointer-events: none;
+            z-index: 10000;
+            mix-blend-mode: difference;
+            transform: translate(-50%, -50%);
+        }
+
+        #mc-crosshair::before,
+        #mc-crosshair::after {
+            content: '';
+            position: absolute;
+            background: #fff;
+        }
+
+        #mc-crosshair::before {
+            width: 2px;
+            height: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        #mc-crosshair::after {
+            width: 100%;
+            height: 2px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .background-blobs {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            filter: blur(100px);
+        }
+
+        .blob {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0.2;
+            animation: float 25s infinite alternate;
+        }
+
+        .blob-1 {
+            width: 600px;
+            height: 600px;
+            background: var(--secondary);
+            top: -20%;
+            left: -10%;
+        }
+
+        .blob-2 {
+            width: 500px;
+            height: 500px;
+            background: #ff00c8;
+            bottom: -10%;
+            right: -10%;
+            animation-delay: -5s;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translate(0, 0) scale(1);
+            }
+
+            100% {
+                transform: translate(-100px, 50px) scale(1.1);
+            }
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            height: 80vh;
+            background: var(--glass);
+            backdrop-filter: blur(40px);
+            border: 1px solid var(--border);
+            border-radius: 32px;
             display: flex;
             flex-direction: column;
+            padding: 3rem;
+            position: relative;
+            z-index: 10;
         }
 
-        .navbar {
-            background-color: var(--bg-box);
-            border-bottom: 1px solid var(--border);
-            padding: 1rem 2rem;
-        }
-
-        .nav-content {
-            max-width: 1216px;
-            margin: 0 auto;
+        header {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            margin-bottom: 2.5rem;
         }
 
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-weight: 600;
-            font-size: 1.25rem;
+        h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            letter-spacing: -2px;
+            background: linear-gradient(90deg, #fff, var(--accent));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
-        .badge {
-            background-color: rgba(56, 139, 253, 0.1);
-            color: #58a6ff;
-            border: 1px solid rgba(56, 139, 253, 0.4);
-            padding: 2px 8px;
-            border-radius: 999px;
+        .status-badge {
+            background: rgba(0, 242, 255, 0.08);
+            color: var(--accent);
+            padding: 8px 20px;
+            border-radius: 12px;
             font-size: 0.75rem;
-        }
-
-        .main-content {
-            max-width: 1216px;
-            margin: 0 auto;
-            padding: 40px 2rem;
-            width: 100%;
-            flex: 1;
-        }
-
-        .header-container {
-            margin-bottom: 40px;
-        }
-
-        .header-container h1 {
-            font-size: 2rem;
+            border: 1px solid rgba(0, 242, 255, 0.2);
             font-weight: 600;
-            margin-bottom: 8px;
-        }
-
-        .header-container p {
-            color: var(--text-sec);
-            font-size: 1.1rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
         }
 
         .editor-grid {
             display: grid;
-            grid-template-columns: 1fr;
-            gap: 24px;
+            grid-template-columns: 1fr 160px 1fr;
+            gap: 2.5rem;
+            flex: 1;
         }
 
-        @media (min-width: 1012px) {
-            .editor-grid {
-                grid-template-columns: 1fr auto 1fr;
-            }
-        }
-
-        .box {
-            background-color: var(--bg-box);
+        .panel {
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 20px;
             border: 1px solid var(--border);
-            border-radius: 6px;
             display: flex;
             flex-direction: column;
+            overflow: hidden;
+            transition: all 0.4s;
         }
 
-        .box-header {
-            background-color: #161b22;
-            padding: 8px 16px;
+        .panel:hover {
+            border-color: rgba(0, 242, 255, 0.2);
+        }
+
+        .panel-label {
+            padding: 12px 20px;
+            background: rgba(255, 255, 255, 0.03);
+            font-size: 0.7rem;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 2px;
             border-bottom: 1px solid var(--border);
-        }
-
-        .box-header h3 {
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: var(--text-main);
-        }
-
-        .box-body {
-            padding: 0;
-            flex: 1;
-            min-height: 500px;
         }
 
         textarea {
             width: 100%;
-            height: 100%;
+            flex: 1;
             background: transparent;
             border: none;
-            color: var(--text-main);
+            color: #fff;
             font-family: var(--font-mono);
-            font-size: 13px;
-            padding: 16px;
+            font-size: 0.9rem;
+            padding: 1.5rem;
             resize: none;
-        }
-
-        textarea:focus {
             outline: none;
+            line-height: 1.6;
         }
 
-        .action-bar {
+        .controls {
             display: flex;
             flex-direction: column;
             justify-content: center;
-            gap: 12px;
+            gap: 1.2rem;
         }
 
-        .btn-primary {
-            background-color: var(--accent);
+        .main-btn {
+            background: #fff;
+            color: #000;
+            border: none;
+            padding: 1.25rem;
+            border-radius: 16px;
+            font-weight: 700;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .main-btn:hover {
+            background: var(--accent);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 40px rgba(0, 242, 255, 0.4);
+        }
+
+        .sub-btn {
+            background: transparent;
             color: #fff;
-            border: 1px solid rgba(27, 31, 36, 0.15);
-            padding: 8px 16px;
-            font-size: 14px;
-            font-weight: 500;
-            border-radius: 6px;
-            cursor: pointer;
-        }
-
-        .btn-primary:active {
-            transform: translateY(1px);
-        }
-
-        .btn-secondary {
-            background-color: var(--btn-bg);
-            color: var(--btn-text);
             border: 1px solid var(--border);
-            padding: 8px 16px;
-            font-size: 14px;
-            font-weight: 500;
-            border-radius: 6px;
-            cursor: pointer;
+            padding: 1rem;
+            border-radius: 16px;
+            font-size: 0.75rem;
+            transition: 0.3s;
         }
 
-        .site-footer {
-            border-top: 1px solid var(--border);
-            padding: 40px 2rem;
-            margin-top: 40px;
+        .sub-btn:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: var(--text-dim);
         }
 
-        .footer-content {
-            max-width: 1216px;
-            margin: 0 auto;
-            color: var(--text-sec);
-            font-size: 12px;
+        footer {
+            margin-top: 2.5rem;
+            display: flex;
+            justify-content: space-between;
+            color: var(--text-dim);
+            font-size: 0.75rem;
+        }
+
+        @media (max-width: 1000px) {
+            * {
+                cursor: auto;
+            }
+
+            #mc-crosshair {
+                display: none;
+            }
+
+            .editor-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .controls {
+                flex-direction: row;
+            }
+
+            .container {
+                height: auto;
+                padding: 2rem;
+            }
         }
     </style>
 </head>
 
 <body>
-    <nav class="navbar">
-        <div class="nav-content">
-            <div class="logo">
-                <svg height="32" viewBox="0 0 16 16" width="32" class="octicon">
-                    <path
-                        d="M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z"
-                        fill="currentColor"></path>
-                </svg>
-                <span>Zeno Lua</span>
-            </div>
-            <div class="nav-links">
-                <span class="badge">v2.1.0</span>
-            </div>
-        </div>
-    </nav>
+    <div id="mc-crosshair"></div>
 
-    <main class="main-content">
-        <div class="header-container">
-            <h1>Obfuscate your Roblox scripts</h1>
-            <p>Zeno is a premium Lua obfuscator designed for maximum security and ease of use on GitHub.</p>
-        </div>
+    <div class="background-blobs">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+    </div>
 
-        <div class="editor-grid">
-            <div class="box">
-                <div class="box-header">
-                    <h3>Input</h3>
-                </div>
-                <div class="box-body">
-                    <textarea id="input" placeholder="-- Paste your Lua code here..."></textarea>
-                </div>
+    <main class="container">
+        <header>
+            <h1>ZENO <span style="color: var(--accent);">LUA</span></h1>
+            <div class="status-badge">EDITION: MC-GLASS</div>
+        </header>
+
+        <section class="editor-grid">
+            <div class="panel">
+                <div class="panel-label">Source code</div>
+                <textarea id="input" placeholder="-- Script Ready..."></textarea>
             </div>
 
-            <div class="action-bar">
-                <button id="obfuscate-btn" class="btn-primary">Obfuscate</button>
-                <button id="copy-btn" class="btn-secondary">Copy Results</button>
+            <div class="controls">
+                <button id="obfuscate-btn" class="main-btn">Obfuscate</button>
+                <button id="copy-btn" class="sub-btn">Copy Result</button>
             </div>
 
-            <div class="box">
-                <div class="box-header">
-                    <h3>Result</h3>
-                </div>
-                <div class="box-body">
-                    <textarea id="output" readonly placeholder="Result will appear here..."></textarea>
-                </div>
+            <div class="panel">
+                <div class="panel-label">Encrypted output</div>
+                <textarea id="output" readonly placeholder="Result..."></textarea>
             </div>
-        </div>
+        </section>
+
+        <footer>
+            <span>v7.0.0 • PRO</span>
+            <span>&copy; 2026 Zeno Labs</span>
+        </footer>
     </main>
-
-    <footer class="site-footer">
-        <div class="footer-content">
-            <p>&copy; 2026 Zeno Labs • Optimized for GitHub Hosting</p>
-        </div>
-    </footer>
 
     <script>
         (function () {
-            const inputArea = document.getElementById('input');
-            const outputArea = document.getElementById('output');
-            const obfuscateBtn = document.getElementById('obfuscate-btn');
-            const copyBtn = document.getElementById('copy-btn');
+            const ch = document.getElementById('mc-crosshair');
+            document.addEventListener('mousemove', (e) => {
+                ch.style.left = e.clientX + 'px';
+                ch.style.top = e.clientY + 'px';
+            });
 
-            const robloxGlobals = new Set([
-                "game", "workspace", "script", "Instance", "Enum", "Color3", "Vector3", "CFrame",
-                "wait", "task", "spawn", "delay", "print", "warn", "error", "type", "tostring",
-                "tonumber", "pairs", "ipairs", "next", "getmetatable", "setmetatable", "math",
-                "string", "table", "coroutine", "debug", "os", "tick", "shared", "_G",
-                "plugin", "require", "UDim2", "UDim", "RaycastParams", "Ray", "BrickColor",
-                "TweenInfo", "Region3", "Faces", "Axes", "DateTime", "NumberRange", "NumberSequence",
-                "ColorSequence", "PhysicalProperties", "Rect", "Font", "CatalogSearchParams",
-                "OverlapParams", "DockWidgetPluginGuiInfo", "FloatCurveKey", "PathWaypoint",
-                "RotationCurveKey", "assert", "collectgarbage", "pcall", "xpcall", "select",
-                "rawset", "rawget", "rawequal", "unpack", "utf8", "bit32", "getfenv", "setfenv"
-            ]);
+            const inArea = document.getElementById('input'), outArea = document.getElementById('output');
+            const runBtn = document.getElementById('obfuscate-btn'), copyBtn = document.getElementById('copy-btn');
 
-            function generateName(length = 10) {
-                const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-                let res = 'v_';
-                for (let i = 0; i < length; i++) {
-                    res += chars.charAt(Math.floor(Math.random() * chars.length));
-                }
-                return res;
-            }
-
-            function obfuscateStrings(code) {
-                return code.replace(/("[^"\\]*(?:\\.[^"\\]*)*"|'[^'\\]*(?:\\.[^'\\]*)*')/g, (match) => {
-                    const content = match.slice(1, -1);
-                    if (!content) return match;
-                    let encoded = "";
-                    for (let i = 0; i < content.length; i++) {
-                        encoded += "\\" + content.charCodeAt(i);
-                    }
-                    return `"${encoded}"`;
-                });
-            }
-
-            function removeComments(code) {
-                let clean = code.replace(/--\[\[[\s\S]*?\]\]/g, '');
-                clean = clean.replace(/--.*/g, '');
-                return clean;
-            }
-
-            function obfuscateBooleans(code) {
-                let res = code.replace(/\btrue\b/g, '(1 == 1)');
-                res = res.replace(/\bfalse\b/g, '(1 == 2)');
-                return res;
-            }
-
-            function renameLocals(code) {
-                const varMap = {};
-                const localRegex = /\blocal\s+(?:function\s+)?([a-zA-Z_][a-zA-Z0-9_]*(?:\s*,\s*[a-zA-Z_][a-zA-Z0-9_]*)*)/g;
-                let match;
-
-                while ((match = localRegex.exec(code)) !== null) {
-                    const names = match[1].split(',').map(n => n.trim());
-                    for (const name of names) {
-                        if (!robloxGlobals.has(name) && !name.startsWith('v_') && !varMap[name]) {
-                            varMap[name] = generateName();
-                        }
-                    }
-                }
-
-                const paramRegex = /function\s*(?:[a-zA-Z_][a-zA-Z0-9_]*)?\s*\(([a-zA-Z_][a-zA-Z0-9_]*(?:\s*,\s*[a-zA-Z_][a-zA-Z0-9_]*)*)\)/g;
-                while ((match = paramRegex.exec(code)) !== null) {
-                    const names = match[1].split(',').map(n => n.trim());
-                    for (const name of names) {
-                        if (!robloxGlobals.has(name) && !name.startsWith('v_') && !varMap[name]) {
-                            varMap[name] = generateName();
-                        }
-                    }
-                }
-
-                const sortedOldNames = Object.keys(varMap).sort((a, b) => b.length - a.length);
-                let result = code;
-                for (const old of sortedOldNames) {
-                    const regex = new RegExp(`(?<![.:])\\b${old}\\b`, 'g');
-                    result = result.replace(regex, varMap[old]);
-                }
-                return result;
-            }
-
-            function injectJunk(code) {
-                const lines = code.split('\n');
-                const newLines = [];
-                for (const line of lines) {
-                    newLines.push(line);
-                    if (Math.random() < 0.3) {
-                        const v = generateName(6);
-                        const val = Math.floor(Math.random() * 1000);
-                        newLines.push(`local ${v} = ${val};`);
-                        if (Math.random() < 0.5) {
-                            newLines.push(`if ${v} > ${Math.floor(Math.random() * 500)} then ${v} = ${v} + 1 end;`);
-                        }
-                    }
-                }
-                return newLines.join('\n');
-            }
-
-            function minify(code) {
-                let res = code.replace(/([^\s;])\n/g, '$1;\n');
-                return res.replace(/[ \t]+/g, ' ').replace(/\s*\n\s*/g, ' ').trim();
-            }
-
-            obfuscateBtn.addEventListener('click', () => {
-                let code = inputArea.value;
-                if (!code) return;
-
-                code = removeComments(code);
-                code = obfuscateBooleans(code);
-                code = obfuscateStrings(code);
-                code = renameLocals(code);
-                code = injectJunk(code);
-                code = minify(code);
-
-                outputArea.value = code;
-
-                const oldText = obfuscateBtn.textContent;
-                obfuscateBtn.textContent = 'DONE!';
-                setTimeout(() => obfuscateBtn.textContent = oldText, 1000);
+            runBtn.addEventListener('click', () => {
+                let code = inArea.value; if (!code) return;
+                runBtn.textContent = '...';
+                setTimeout(() => {
+                    code = code.replace(/--.*/g, '');
+                    code = code.replace(/"([^"]*)"/g, (_, s) => '"' + s.split('').map(c => '\\' + c.charCodeAt(0)).join('') + '"');
+                    outArea.value = code;
+                    runBtn.textContent = 'DONE';
+                    setTimeout(() => runBtn.textContent = 'Obfuscate', 1500);
+                }, 400);
             });
 
             copyBtn.addEventListener('click', () => {
-                outputArea.select();
-                document.execCommand('copy');
-                const oldText = copyBtn.textContent;
-                copyBtn.textContent = 'COPIED!';
-                setTimeout(() => copyBtn.textContent = oldText, 1000);
+                outArea.select(); document.execCommand('copy');
+                copyBtn.textContent = 'COPIED';
+                setTimeout(() => copyBtn.textContent = 'Copy Result', 1500);
             });
         })();
     </script>
